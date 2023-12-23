@@ -48,7 +48,7 @@ const Modal = ({ selectedPokemon, closeModal }) => {
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
       <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50"></div>
-      <div className="w-4/5 h-2/5 bg-white p-4 rounded-lg relative">
+      <div className="w-full h-full md:w-4/5 md:h-2/5 bg-white p-4 rounded-lg relative">
         <div className="flex items-center justify-between">
           <div className="text-xl font-bold">Pokemon Details</div>
           <IoMdClose
@@ -57,7 +57,7 @@ const Modal = ({ selectedPokemon, closeModal }) => {
             className="cursor-pointer"
           />
         </div>
-        <div className="flex flex-col items-center md:items-start md:flex-row gap-20 mt-5">
+        <div className="flex flex-col items-center md:items-start md:flex-row gap-20 mt-20 md:mt-5">
           <div className="flex items-center justify-center">
             <img
               className="w-60 h-60 border border-gray-300 rounded-md p-2"
