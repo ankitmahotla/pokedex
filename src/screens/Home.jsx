@@ -1,18 +1,29 @@
+// Home.js
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setPokemonList,
+  addPokemonToList,
+  setSelectedPokemon,
+  setLoading,
+  setOffset,
+} from "../store/pokemonSlice";
 import PokemonCard from "../components/PokemonCard";
 import Modal from "../components/Modal";
-import { useState, useEffect } from "react";
 import MoonLoader from "react-spinners/MoonLoader";
 
-export default function Home() {
-  const [pokemonList, setPokemonList] = useState([]);
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
+const Home = () => {
+  const dispatch = useDispatch();
+  const { pokemonList, selectedPokemon, isLoading, offset } = useSelector(
+    (state) => state.pokemon
+  );
+  const searchInput = useSelector((state) => state.search.searchInput);
+
   const [showModal, setShowModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [offset, setOffset] = useState(0);
 
   const fetchPokemonList = async () => {
     try {
-      setIsLoading(true);
+      dispatch(setLoading(true));
 
       const response = await fetch(
         `https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`
@@ -22,17 +33,25 @@ export default function Home() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (offset === 0) {
-        setPokemonList(data.results);
+        dispatch(setPokemonList(data.results));
       } else {
-        setPokemonList((prevList) => [...prevList, ...data.results]);
+        dispatch(addPokemonToList(data.results));
       }
 
-      setIsLoading(false);
+      dispatch(setLoading(false));
     } catch (error) {
       console.log(error);
-      setIsLoading(false);
+      dispatch(setLoading(false));
     }
   };
+
+  const filteredPokemonList = pokemonList.filter((pokemon) => {
+    const searchTerm = searchInput.toLowerCase();
+    return (
+      pokemon.name.toLowerCase().includes(searchTerm) ||
+      pokemon.url.includes(`/pokemon/${searchTerm}`)
+    );
+  });
 
   useEffect(() => {
     fetchPokemonList();
@@ -44,18 +63,13 @@ export default function Home() {
     const clientHeight = window.innerHeight;
 
     if (clientHeight + scrollTop + 1 >= scrollHeight) {
-      setOffset((prevOffset) => prevOffset + 20);
+      dispatch(setOffset(offset + 20));
     }
   };
 
   const handleCardClick = (pokemon) => {
-    setSelectedPokemon(pokemon);
+    dispatch(setSelectedPokemon(pokemon));
     setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setSelectedPokemon(null);
-    setShowModal(false);
   };
 
   useEffect(() => {
@@ -67,7 +81,7 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 m-10">
-      {pokemonList.map((pokemon, index) => (
+      {filteredPokemonList.map((pokemon, index) => (
         <div
           key={pokemon.name}
           id={`pokemon-${index}`}
@@ -83,8 +97,12 @@ export default function Home() {
         </div>
       )}
       {showModal && (
-        <Modal selectedPokemon={selectedPokemon} closeModal={closeModal} />
+        <Modal
+          selectedPokemon={selectedPokemon}
+          closeModal={() => setShowModal(false)}
+        />
       )}
     </div>
   );
-}
+};
+export default Home;

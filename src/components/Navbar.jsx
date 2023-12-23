@@ -1,6 +1,11 @@
 import { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchInput } from "../store/searchSlice";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const searchInput = useSelector((state) => state.search.searchInput);
+
   const [dropdown, setDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const [type, setType] = useState([]);
@@ -66,6 +71,8 @@ const Navbar = () => {
               id="search-navbar"
               className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 "
               placeholder="Search..."
+              value={searchInput}
+              onChange={(e) => dispatch(setSearchInput(e.target.value))}
             />
           </div>
           <div className="flex relative" ref={dropdownRef}>
