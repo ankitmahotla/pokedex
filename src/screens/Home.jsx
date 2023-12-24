@@ -64,7 +64,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isLoading, offset]);
+  }, [isLoading, offset, selectedType]);
 
   const handleScroll = () => {
     const scrollHeight = document.documentElement.scrollHeight;
@@ -73,8 +73,14 @@ const Home = () => {
 
     if (clientHeight + scrollTop + 1 >= scrollHeight) {
       if (offset >= fullPokemonList.length) return;
-      dispatch(setLoading(true));
+      if (selectedType !== "Type") {
+        const filteredList = fullPokemonList.filter((pokemon) =>
+          pokemon.types?.some((type) => type.type.name === selectedType)
+        );
+        if (offset >= filteredList.length) return;
+      }
 
+      dispatch(setLoading(true));
       setTimeout(() => {
         dispatch(addPokemonToList(fullPokemonList.slice(offset, offset + 20)));
         dispatch(setOffset(offset + 20));
@@ -109,7 +115,14 @@ const Home = () => {
           className="col-span-1 cursor-pointer transition-transform transform hover:scale-105"
           onClick={() => handleCardClick(pokemon)}
         >
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-32 bg-gray-200 rounded-md">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 border-opacity-50"></div>
+                <span className="ml-2 text-gray-700">Loading...</span>
+              </div>
+            }
+          >
             <PokemonCard
               id={pokemon.url.split("/")[pokemon.url.split("/").length - 2]}
               name={
