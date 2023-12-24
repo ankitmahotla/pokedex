@@ -1,3 +1,4 @@
+// Home.js
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,6 +9,7 @@ import {
   setOffset,
 } from "../store/pokemonSlice";
 import { setFullPokemonList } from "../store/pokemonSlice";
+import { setSelectedType } from "../store/typeSlice";
 import PokemonCard from "../components/PokemonCard";
 import Modal from "../components/Modal";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -18,6 +20,7 @@ const Home = () => {
     (state) => state.pokemon
   );
   const searchInput = useSelector((state) => state.search.searchInput);
+  const selectedType = useSelector((state) => state.type.selectedType); // New state for selected type
 
   const [showModal, setShowModal] = useState(false);
 
@@ -28,11 +31,23 @@ const Home = () => {
       const response = await fetch(
         `https://pokeapi.co/api/v2/pokemon?limit=1000`
       );
-
       const data = await response.json();
 
-      dispatch(setFullPokemonList(data.results));
-      dispatch(setPokemonList(data.results.slice(0, 20)));
+      // Ensure each Pokemon object has a 'types' property
+      const pokemonListWithTypes = await Promise.all(
+        data.results.map(async (pokemon) => {
+          const pokemonData = await fetch(pokemon.url).then((res) =>
+            res.json()
+          );
+          return {
+            ...pokemon,
+            types: pokemonData.types,
+          };
+        })
+      );
+
+      dispatch(setFullPokemonList(pokemonListWithTypes));
+      dispatch(setPokemonList(pokemonListWithTypes.slice(0, 20)));
       dispatch(setOffset(20));
 
       dispatch(setLoading(false));
@@ -40,27 +55,6 @@ const Home = () => {
       console.log(error);
       dispatch(setLoading(false));
     }
-  };
-
-  const handleScroll = () => {
-    const scrollHeight = document.documentElement.scrollHeight;
-    const scrollTop = document.documentElement.scrollTop;
-    const clientHeight = window.innerHeight;
-
-    if (clientHeight + scrollTop + 1 >= scrollHeight) {
-      dispatch(setLoading(true));
-
-      setTimeout(() => {
-        dispatch(addPokemonToList(fullPokemonList.slice(offset, offset + 20)));
-        dispatch(setOffset(offset + 20));
-        dispatch(setLoading(false));
-      }, 1000);
-    }
-  };
-
-  const handleCardClick = (pokemon) => {
-    dispatch(setSelectedPokemon(pokemon));
-    setShowModal(true);
   };
 
   useEffect(() => {
@@ -74,11 +68,36 @@ const Home = () => {
     };
   }, [isLoading, offset]);
 
+  const handleScroll = () => {
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = document.documentElement.scrollTop;
+    const clientHeight = window.innerHeight;
+
+    if (clientHeight + scrollTop + 1 >= scrollHeight) {
+      dispatch(setLoading(true)); // Show the loader
+
+      setTimeout(() => {
+        dispatch(addPokemonToList(fullPokemonList.slice(offset, offset + 20)));
+        dispatch(setOffset(offset + 20));
+        dispatch(setLoading(false)); // Hide the loader after the delay
+      }, 1000);
+    }
+  };
+
+  const handleCardClick = (pokemon) => {
+    dispatch(setSelectedPokemon(pokemon));
+    setShowModal(true);
+  };
+
   const filteredPokemonList = fullPokemonList.filter((pokemon) => {
     const searchTerm = searchInput.toLowerCase();
+    const pokemonType = selectedType.toLowerCase();
+
     return (
-      pokemon.name.toLowerCase().includes(searchTerm) ||
-      pokemon.url.includes(`/pokemon/${searchTerm}`)
+      (pokemon.name.toLowerCase().includes(searchTerm) ||
+        pokemon.url.includes(`/pokemon/${searchTerm}`)) &&
+      (selectedType === "Type" || // Show all types if "Type" is selected
+        pokemon.types?.some((type) => type.type.name === pokemonType))
     );
   });
 

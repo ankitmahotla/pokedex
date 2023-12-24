@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchInput } from "../store/searchSlice";
+import { setSelectedType } from "../store/typeSlice"; // Import the new action
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const searchInput = useSelector((state) => state.search.searchInput);
+  const selectedType = useSelector((state) => state.type.selectedType); // New state for selected type
 
   const [dropdown, setDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const [type, setType] = useState([]);
-  const [selectedType, setSelectedType] = useState("Type");
+  const [type, setType] = useState(["Type"]);
 
   const fetchPokemonType = async () => {
     try {
@@ -105,17 +106,16 @@ const Navbar = () => {
             </button>
             {dropdown && (
               <ul className="w-full space-y-2 py-2 absolute top-8 text-sm z-10 border border-gray-300 bg-gray-50 rounded-lg rounded-t-none border-t-0 z-1 h-36 overflow-scroll overflow-x-hidden">
-                {type.map((type) => (
+                {type.map((typeName) => (
                   <li
                     className="px-2 py-1 hover:bg-gray-100 rounded-lg cursor-pointer"
+                    key={typeName}
                     onClick={() => {
-                      setSelectedType(
-                        type.charAt(0).toUpperCase() + type.slice(1)
-                      );
+                      dispatch(setSelectedType(typeName));
                       setDropdown(false);
                     }}
                   >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                    {typeName}
                   </li>
                 ))}
               </ul>

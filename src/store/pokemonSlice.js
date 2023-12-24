@@ -3,7 +3,7 @@ import { createSlice, createAction } from "@reduxjs/toolkit";
 export const pokemonSlice = createSlice({
   name: "pokemon",
   initialState: {
-    fullPokemonList: [], // New state to store the full list of pokemons
+    fullPokemonList: [],
     pokemonList: [],
     selectedPokemon: null,
     isLoading: false,
