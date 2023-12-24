@@ -42,7 +42,7 @@ const Navbar = () => {
   }, [dropdownRef]);
 
   return (
-    <nav className="bg-white border-gray-200 fixed top-0 w-full z-50">
+    <nav className="bg-white border-gray-200">
       <div className="w-full flex flex-wrap items-center justify-between mx-auto p-4">
         <span className="self-center text-2xl font-semibold whitespace-nowraP">
           Pokedex
