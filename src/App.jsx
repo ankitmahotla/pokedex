@@ -4,7 +4,9 @@ export default function App() {
   return (
     <>
       <Navbar />
-      <Home />
+      <div className="mt-36 md:mt-20">
+        <Home />
+      </div>
     </>
   );
 }
