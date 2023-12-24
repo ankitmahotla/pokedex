@@ -21,10 +21,10 @@ const Modal = ({ selectedPokemon, closeModal }) => {
       const data = await res.json();
       console.log("Pokemon details:", data);
       setPokemonDetails(data);
-      setLoading(false); // Set loading to false when details are fetched
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching Pokemon details:", error);
-      setLoading(false); // Set loading to false in case of an error
+      setLoading(false);
     }
   };
 

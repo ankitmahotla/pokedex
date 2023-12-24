@@ -1,4 +1,3 @@
-// store.js
 import { configureStore } from "@reduxjs/toolkit";
 import pokemonReducer from "./pokemonSlice";
 import searchReducer from "./searchSlice";
