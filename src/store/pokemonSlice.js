@@ -1,15 +1,18 @@
-// pokemonSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAction } from "@reduxjs/toolkit";
 
 export const pokemonSlice = createSlice({
   name: "pokemon",
   initialState: {
+    fullPokemonList: [], // New state to store the full list of pokemons
     pokemonList: [],
     selectedPokemon: null,
     isLoading: false,
     offset: 0,
   },
   reducers: {
+    setFullPokemonList: (state, action) => {
+      state.fullPokemonList = action.payload;
+    },
     setPokemonList: (state, action) => {
       state.pokemonList = action.payload;
     },
@@ -29,6 +32,7 @@ export const pokemonSlice = createSlice({
 });
 
 export const {
+  setFullPokemonList,
   setPokemonList,
   addPokemonToList,
   setSelectedPokemon,
