@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchInput } from "../store/searchSlice";
-import { setSelectedType } from "../store/typeSlice"; // Import the new action
+import { setSelectedType } from "../store/typeSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const searchInput = useSelector((state) => state.search.searchInput);
-  const selectedType = useSelector((state) => state.type.selectedType); // New state for selected type
+  const selectedType = useSelector((state) => state.type.selectedType);
 
   const [dropdown, setDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -86,7 +86,7 @@ const Navbar = () => {
                   selectedType === "Type" && "text-gray-400"
                 }`}
               >
-                {selectedType}
+                {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}
               </h3>
               <svg
                 className="w-2 h-2 ms-2.5 text-gray-400"
@@ -115,7 +115,7 @@ const Navbar = () => {
                       setDropdown(false);
                     }}
                   >
-                    {typeName}
+                    {typeName.charAt(0).toUpperCase() + typeName.slice(1)}
                   </li>
                 ))}
               </ul>
