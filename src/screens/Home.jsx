@@ -108,31 +108,37 @@ const Home = () => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 m-10">
-      {filteredPokemonList.slice(0, offset).map((pokemon, index) => (
-        <div
-          key={pokemon.name}
-          id={`pokemon-${index}`}
-          className="col-span-1 cursor-pointer transition-transform transform hover:scale-105"
-          onClick={() => handleCardClick(pokemon)}
-        >
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center h-32 bg-gray-200 rounded-md">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 border-opacity-50"></div>
-                <span className="ml-2 text-gray-700">Loading...</span>
-              </div>
-            }
-          >
-            <PokemonCard
-              id={pokemon.url.split("/")[pokemon.url.split("/").length - 2]}
-              name={
-                pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
-              }
-              types={pokemon.types.map((type) => type.type.name)}
-            />
-          </Suspense>
-        </div>
-      ))}
+      {filteredPokemonList.length > 0
+        ? filteredPokemonList.slice(0, offset).map((pokemon, index) => (
+            <div
+              key={pokemon.name}
+              id={`pokemon-${index}`}
+              className="col-span-1 cursor-pointer transition-transform transform hover:scale-105"
+              onClick={() => handleCardClick(pokemon)}
+            >
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-32 bg-gray-200 rounded-md">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 border-opacity-50"></div>
+                    <span className="ml-2 text-gray-700">Loading...</span>
+                  </div>
+                }
+              >
+                <PokemonCard
+                  id={pokemon.url.split("/")[pokemon.url.split("/").length - 2]}
+                  name={
+                    pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
+                  }
+                  types={pokemon.types.map((type) => type.type.name)}
+                />
+              </Suspense>
+            </div>
+          ))
+        : !isLoading && (
+            <div className="col-span-full flex justify-center my-4">
+              <h1 className="text-2xl text-gray-400">No Pokemon Found</h1>
+            </div>
+          )}
       {isLoading && (
         <div className="col-span-full flex justify-center my-4">
           <MoonLoader size={30} color={"#36D7B7"} loading={isLoading} />

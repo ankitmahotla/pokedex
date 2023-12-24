@@ -1,8 +1,15 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
+
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+  </div>
+);
 
 const Modal = ({ selectedPokemon, closeModal }) => {
   const [pokemonDetails, setPokemonDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
   const id =
     selectedPokemon.url.split("/")[selectedPokemon.url.split("/").length - 2];
 
@@ -14,8 +21,10 @@ const Modal = ({ selectedPokemon, closeModal }) => {
       const data = await res.json();
       console.log("Pokemon details:", data);
       setPokemonDetails(data);
+      setLoading(false); // Set loading to false when details are fetched
     } catch (error) {
-      console.error("Error fetching Pokemon type:", error);
+      console.error("Error fetching Pokemon details:", error);
+      setLoading(false); // Set loading to false in case of an error
     }
   };
 
@@ -48,7 +57,7 @@ const Modal = ({ selectedPokemon, closeModal }) => {
   );
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-20">
       <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50"></div>
       <div className="w-full h-full md:w-3/5 md:h-2/5 xl:w-2/5 bg-white p-6 rounded-lg relative">
         <div className="flex items-center justify-between">
@@ -59,54 +68,58 @@ const Modal = ({ selectedPokemon, closeModal }) => {
             className="cursor-pointer"
           />
         </div>
-        <div className="flex flex-col items-center md:items-start md:flex-row gap-5 md:gap-20 mt-20 md:mt-5">
-          <div className="flex items-center justify-center">
-            <img
-              className="w-60 h-60 border border-gray-300 rounded-md p-2"
-              src={`https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/${id}.svg`}
-              alt={selectedPokemon}
-            />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">
-              {selectedPokemon.name.charAt(0).toUpperCase() +
-                selectedPokemon.name.slice(1)}{" "}
-            </h1>
-            <div className="flex items-center gap-4 mt-3">
-              Types:
-              {pokemonDetails?.types?.map((type, index) => (
-                <div
-                  key={index}
-                  className="border border-gray-300 rounded-md p-1"
-                >
-                  {type.type.name.charAt(0).toUpperCase() +
-                    type.type.name.slice(1)}
-                </div>
-              ))}
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="flex flex-col items-center md:items-start md:flex-row gap-5 md:gap-20 mt-20 md:mt-5">
+            <div className="flex items-center justify-center">
+              <img
+                className="w-60 h-60 border border-gray-300 rounded-md p-2"
+                src={`https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/${id}.svg`}
+                alt={selectedPokemon.name}
+              />
             </div>
             <div>
-              <div className="mt-3">
-                {pokemonDetails?.stats?.map(
-                  (stat, index) =>
-                    index < 3 && (
-                      <ProgressBar
-                        key={index}
-                        stat={stat.stat.name}
-                        value={stat.base_stat}
-                        color={
-                          stat.base_stat > 50
-                            ? "bg-green-500"
-                            : stat.base_stat > 30
-                            ? "bg-yellow-500"
-                            : "bg-red-500"
-                        }
-                      />
-                    )
-                )}
+              <h1 className="text-2xl font-bold">
+                {selectedPokemon.name.charAt(0).toUpperCase() +
+                  selectedPokemon.name.slice(1)}{" "}
+              </h1>
+              <div className="flex items-center gap-4 mt-3">
+                Types:
+                {pokemonDetails?.types?.map((type, index) => (
+                  <div
+                    key={index}
+                    className="border border-gray-300 rounded-md p-1"
+                  >
+                    {type.type.name.charAt(0).toUpperCase() +
+                      type.type.name.slice(1)}
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div className="mt-3">
+                  {pokemonDetails?.stats?.map(
+                    (stat, index) =>
+                      index < 3 && (
+                        <ProgressBar
+                          key={index}
+                          stat={stat.stat.name}
+                          value={stat.base_stat}
+                          color={
+                            stat.base_stat > 50
+                              ? "bg-green-500"
+                              : stat.base_stat > 30
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
+                          }
+                        />
+                      )
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
