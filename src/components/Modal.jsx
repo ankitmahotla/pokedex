@@ -36,7 +36,9 @@ const Modal = ({ selectedPokemon, closeModal }) => {
         <span>{stat}</span>
         <span>{value}</span>
       </div>
-      <div className={`h-2 bg-gray-300 rounded overflow-hidden w-60`}>
+      <div
+        className={`h-2 bg-gray-300 rounded overflow-hidden w-60 md:w-40 lg:w-60`}
+      >
         <div
           className={`h-full ${color} transition-width duration-500 ease-in-out`}
           style={{ width: `${value}%` }}
@@ -48,7 +50,7 @@ const Modal = ({ selectedPokemon, closeModal }) => {
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
       <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50"></div>
-      <div className="w-full h-full md:w-4/5 md:h-2/5 bg-white p-4 rounded-lg relative">
+      <div className="w-full h-full md:w-3/5 md:h-2/5 xl:w-2/5 bg-white p-6 rounded-lg relative">
         <div className="flex items-center justify-between">
           <div className="text-xl font-bold">Pokemon Details</div>
           <IoMdClose
@@ -57,7 +59,7 @@ const Modal = ({ selectedPokemon, closeModal }) => {
             className="cursor-pointer"
           />
         </div>
-        <div className="flex flex-col items-center md:items-start md:flex-row gap-20 mt-20 md:mt-5">
+        <div className="flex flex-col items-center md:items-start md:flex-row gap-5 md:gap-20 mt-20 md:mt-5">
           <div className="flex items-center justify-center">
             <img
               className="w-60 h-60 border border-gray-300 rounded-md p-2"
@@ -65,9 +67,8 @@ const Modal = ({ selectedPokemon, closeModal }) => {
               alt={selectedPokemon}
             />
           </div>
-          <div className="">
+          <div>
             <h1 className="text-2xl font-bold">
-              {" "}
               {selectedPokemon.name.charAt(0).toUpperCase() +
                 selectedPokemon.name.slice(1)}{" "}
             </h1>
