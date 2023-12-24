@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
 const PokemonCard = ({ id, name, types }) => {
-  const [typesList, setTypesList] = useState(types);
-
   return (
     <div className="flex flex-col justify-center gap-2">
       <div className="bg-gray-200 flex items-center justify-center p-2 rounded-md">
@@ -17,7 +15,7 @@ const PokemonCard = ({ id, name, types }) => {
         #{id} {name}
       </h2>
       <div className="flex items-center gap-2">
-        {typesList.map((type, index) => (
+        {types.map((type, index) => (
           <span key={index} className="border border-gray-300 rounded-md p-1">
             {type.charAt(0).toUpperCase() + type.slice(1)}
           </span>

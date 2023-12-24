@@ -28,7 +28,7 @@ const Home = () => {
       dispatch(setLoading(true));
 
       const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon?limit=500`
+        `https://pokeapi.co/api/v2/pokemon?limit=649`
       );
       const data = await response.json();
 
